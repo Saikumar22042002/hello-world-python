@@ -1,42 +1,39 @@
-# Stage 1: Builder stage to install dependencies
-FROM python:3.11-slim as builder
+# Stage 1: Builder
+# This stage installs dependencies into a virtual environment.
+FROM python:3.11-slim-bookworm as builder
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
 # Create and activate a virtual environment
-RUN python -m venv /opt/venv
-ENV PATH="/opt/venv/bin:$PATH"
+ENV VIRTUAL_ENV=/opt/venv
+RUN python3 -m venv $VIRTUAL_ENV
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 # Install dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Stage 2: Final production image
-FROM python:3.11-slim
+# Stage 2: Final Image
+# This stage creates the final, minimal image for production.
+FROM python:3.11-slim-bookworm
 
-# Create a non-root user
-RUN addgroup --system app && adduser --system --group app
+WORKDIR /app
 
-WORKDIR /home/app
-
-# Copy virtual environment from builder stage
+# Copy the virtual environment from the builder stage
 COPY --from=builder /opt/venv /opt/venv
 
-# Copy application code
+# Copy the application source code
 COPY app.py .
 
-# Change ownership to non-root user
-RUN chown -R app:app /home/app
-
-# Set environment variables
+# Set the path to include the virtual environment's binaries
 ENV PATH="/opt/venv/bin:$PATH"
-ENV PYTHON_ENV=production
-ENV PORT=5000
 
-# Switch to non-root user
-USER app
-
+# Expose the port the application will run on
 EXPOSE 5000
 
-# Run the application with Gunicorn
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app:app"]
+# Run as a non-root user for security
+USER nobody
+
+# Command to run the application using Gunicorn
+# Gunicorn is a production-grade WSGI server.
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "4", "app:app"]

@@ -1,10 +1,7 @@
-# Byte-compiled / optimized / DLL files
+# Python build artifacts
 __pycache__/
 *.py[cod]
 *$py.class
-
-# C extensions
-*.so
 
 # Distribution / packaging
 .Python
@@ -19,9 +16,11 @@ parts/
 sdist/
 var/
 wheels/
+share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+MANIFEST
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -41,24 +40,19 @@ htmlcov/
 .coverage.*
 .cache
 .pytest_cache/
+.hypothesis/
 nosetests.xml
 coverage.xml
 *.cover
-.hypothesis/
+*.log
 
 # Environments
 .env
 .venv
-virtualenv/
+env/
 venv/
 ENV/
-env/
 
-# Mypy, Pyre and other static analysis
-.mypy_cache/
-.pyre/
-.pytype/
-
-# IDE settings
+# IDE specific files
 .idea/
 .vscode/
