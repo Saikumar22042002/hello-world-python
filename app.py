@@ -1,21 +1,24 @@
-"""
-This is the main application file for the Flask Hello World service.
-It defines the web server and the API endpoints.
-"""
 from flask import Flask, jsonify
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 
 @app.route('/', methods=['GET'])
 def index():
-    """Handles requests to the root URL."""
-    return jsonify({"message": "Hello World"})
+    """Main endpoint, returns a hello world message."""
+    logger.info("Root endpoint was called")
+    return jsonify({"message": "Hello World"}), 200
 
 @app.route('/health', methods=['GET'])
-def health_check():
-    """Provides a health check endpoint for monitoring."""
+def health():
+    """Health check endpoint."""
+    logger.info("Health check was called")
     return jsonify({"status": "healthy"}), 200
 
 if __name__ == '__main__':
-    # This block is for local development and is not used by Gunicorn in production.
-    app.run(host='0.0.0.0', port=5000)
+    # This block is for local development only
+    app.run(host='0.0.0.0', port=5000, debug=True)

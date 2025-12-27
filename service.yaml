@@ -1,16 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: hello-world-python-svc
-  labels:
-    app: hello-world-python-dev
-    environment: dev
+  name: hello-world-python-service
 spec:
   type: LoadBalancer
   selector:
-    app: hello-world-python-dev
+    app: hello-world-python
   ports:
-  - name: http
-    protocol: TCP
-    port: 80
-    targetPort: 5000
+    - protocol: TCP
+      port: 80
+      targetPort: 5000
